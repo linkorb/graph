@@ -1,0 +1,29 @@
+{
+    "name": "linkorb/graph",
+    "description": "Graph: generic in-memory graph resource toolkit",
+    "homepage": "http://www.github.com/linkorb/graph",
+    "keywords": ["php", "graph", "graphql", "linkorb"],
+    "type": "library",
+    "authors": [
+        {
+            "name": "LinkORB Engineering",
+            "email": "engineering@linkorb.com",
+            "role": "Development"
+        }
+    ],
+    "require": {
+        "php": ">=7.2.0",
+        "symfony/console": "^4.0",
+        "symfony/yaml": "^3.0|^4.0",
+        "symfony/dotenv": "^4.0",
+        "doctrine/inflector": "^1.0",
+        "webonyx/graphql-php": "^0.13.1",
+        "symfony/serializer": "^4.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Graph\\": "src/"
+        }
+    },
+    "license": "MIT"
+}
