@@ -5,7 +5,7 @@ namespace Graph\Loader;
 use Graph\Graph;
 use Graph\Resource\ResourceInterface;
 use Symfony\Component\Yaml\Yaml;
-
+use RuntimeException;
 
 class ResourceYamlLoader
 {
