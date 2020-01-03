@@ -13,6 +13,7 @@ abstract class AbstractResource implements ResourceInterface
     protected $graph;
     protected $typeName;
     protected $spec = [];
+    protected $metadata = [];
 
     protected function __construct(Graph $graph)
     {
@@ -30,6 +31,7 @@ abstract class AbstractResource implements ResourceInterface
         if (!isset($metadata['name'])) {
             throw new RuntimeException("Name missing on resource");
         }
+        $resource->metadata = $metadata;
         $resource->name = $metadata['name'];
 
         if (!isset($config['kind'])) {
@@ -66,6 +68,11 @@ abstract class AbstractResource implements ResourceInterface
         return $this->spec;
     }
 
+    public function getMetadata()
+    {
+        return $this->metadata;
+    }
+
     public function offsetSet($offset, $value) {
         throw new RuntimeException("Read only array access");
     }
@@ -88,11 +95,21 @@ abstract class AbstractResource implements ResourceInterface
     {
         $data = [
             'kind' => $this->getTypeName(),
-            'metadata' => [
-                'name' => $this->getName()
-            ],
+            'metadata' => $this->getMetadata(),
             'spec' => $this->spec
         ];
+        return $data;
+    }
+
+    public function getLabels()
+    {
+        $data = [];
+        foreach ($this->getMetadata()['labels'] as $k=>$v) {
+            $data[] = [
+                'key' => $k,
+                'value' => $v,
+            ];
+        }
         return $data;
     }
 }
