@@ -57,6 +57,9 @@ class ResourceYamlLoader
         $kind = $config['kind'];
         $className = $graph->getTypeClass($kind);
         $resource = $className::fromConfig($graph, $config);
+        if (!$resource) {
+            throw new RuntimeException("fromConfig did not return a resource");
+        }
         $graph->addResource($resource);
     }
 }
