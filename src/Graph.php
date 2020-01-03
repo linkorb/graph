@@ -158,6 +158,9 @@ class Graph
 
     public function addResource(ResourceInterface $resource): void
     {
+        if (!isset($this->typeClassMap[$resource->getTypeName()])) {
+            throw new Exception\UnknownResourceTypeException($resource->getTypeName());
+        }
         $this->resources[$resource->getTypeName()][$resource->getName()] = $resource;
     }
 
