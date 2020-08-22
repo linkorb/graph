@@ -104,7 +104,7 @@ abstract class AbstractResource implements ResourceInterface
     public function getLabels()
     {
         $data = [];
-        foreach ($this->getMetadata()['labels'] as $k=>$v) {
+        foreach ($this->getMetadata()['labels'] ?? [] as $k=>$v) {
             $data[] = [
                 'key' => $k,
                 'value' => $v,
