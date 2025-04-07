@@ -2,17 +2,16 @@
 
 namespace Graph;
 
+use Doctrine\Inflector\InflectorFactory;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use Graph\Resource\ResourceInterface;
-use Graph\Exception;
-use Doctrine\Common\Inflector\Inflector;
-use RuntimeException;
 
 class Graph
 {
     protected $types = [];
+    protected $inflector;
     protected $typeClassMap = [];
     protected $resources = [];
     protected $schema;
@@ -20,7 +19,7 @@ class Graph
 
     public function __construct()
     {
-        $this->inflector = new Inflector();
+        $this->inflector = InflectorFactory::create()->build();
     }
 
     public function init($container)
@@ -40,6 +39,7 @@ class Graph
     {
         return $this->container;
     }
+
     public function getSchema()
     {
         return $this->schema;
@@ -164,7 +164,7 @@ class Graph
         $this->resources[$resource->getTypeName()][$resource->getName()] = $resource;
     }
 
-    // public function getResources(): 
+    // public function getResources():
     // {
     //     return $this->resources;
     // }
@@ -176,21 +176,21 @@ class Graph
 
         foreach ($graph->getTypeNames() as $typeName) {
             $fieldConfig[lcfirst($typeName)] = [
-                'type'        => $graph->getType($typeName),
-                'description' => 'Returns ' . $typeName . ' by name',
-                'args'        => [
+                'type' => $graph->getType($typeName),
+                'description' => 'Returns '.$typeName.' by name',
+                'args' => [
                     'name' => Type::nonNull(Type::string()),
                 ],
-                'resolve'     => function ($root, $args) use ($graph, $typeName) {
+                'resolve' => function ($root, $args) use ($graph, $typeName) {
                     $resource = $graph->getResource($typeName, $args['name']);
 
                     return $resource;
                 },
             ];
-            $fieldConfig['all' . $graph->getInflector()->pluralize($typeName)] = [
-                'type'        => Type::listOf($graph->getType($typeName)),
-                'description' => 'Returns all ' . $graph->getInflector()->pluralize($typeName),
-                'resolve'     => function ($root, $args) use ($graph, $typeName) {
+            $fieldConfig['all'.$graph->getInflector()->pluralize($typeName)] = [
+                'type' => Type::listOf($graph->getType($typeName)),
+                'description' => 'Returns all '.$graph->getInflector()->pluralize($typeName),
+                'resolve' => function ($root, $args) use ($graph, $typeName) {
                     $resources = $graph->getResourcesByType($typeName);
 
                     return $resources;
