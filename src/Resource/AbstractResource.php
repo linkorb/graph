@@ -3,9 +3,11 @@
 namespace Graph\Resource;
 
 use Graph\Graph;
-use ArrayAccess;
 use RuntimeException;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 abstract class AbstractResource implements ResourceInterface
 {
     protected $name;
@@ -19,8 +21,8 @@ abstract class AbstractResource implements ResourceInterface
     {
         $this->graph = $graph;
     }
-    
-    public static function fromConfig(Graph $graph, array $config)
+
+    public static function fromConfig(Graph $graph, array $config): AbstractResource
     {
         $resource = new static($graph);
         if (!isset($config['metadata'])) {
@@ -91,7 +93,7 @@ abstract class AbstractResource implements ResourceInterface
         return $this->{$method}();
     }
 
-    public function serialize()
+    public function serialize(): array
     {
         $data = [
             'kind' => $this->getTypeName(),
@@ -101,7 +103,7 @@ abstract class AbstractResource implements ResourceInterface
         return $data;
     }
 
-    public function getLabels()
+    public function getLabels(): array
     {
         $data = [];
         foreach ($this->getMetadata()['labels'] ?? [] as $k=>$v) {

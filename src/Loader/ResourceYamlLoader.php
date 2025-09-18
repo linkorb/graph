@@ -3,7 +3,6 @@
 namespace Graph\Loader;
 
 use Graph\Graph;
-use Graph\Resource\ResourceInterface;
 use Symfony\Component\Yaml\Yaml;
 use RuntimeException;
 
@@ -19,7 +18,7 @@ class ResourceYamlLoader
         return $files;
     }
 
-    public function loadPath(Graph $graph, string $path)
+    public function loadPath(Graph $graph, string $path): bool
     {
         if (!is_dir($path)) {
             throw new RuntimeException("Path is not a directory: " . $path);
@@ -38,7 +37,7 @@ class ResourceYamlLoader
     public function loadResourceFile(Graph $graph, string $filename): void
     {
         if (!file_exists($filename)) {
-            throw new Exception\FileNotFoundException($filename);
+            throw new \Exception($filename);
         }
         $yaml = file_get_contents($filename);
 
