@@ -2,6 +2,7 @@
 
 namespace Graph;
 
+use Doctrine\Inflector\Inflector;
 use Doctrine\Inflector\InflectorFactory;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
@@ -30,7 +31,7 @@ class Graph
         ]);
     }
 
-    public function getInflector()
+    public function getInflector(): Inflector
     {
         return $this->inflector;
     }
@@ -51,6 +52,9 @@ class Graph
         $this->typeClassMap[$name] = $className;
     }
 
+    /**
+     * @throws \ReflectionException
+     */
     public function getTypeName(string $className): string
     {
         $name = (new \ReflectionClass($className))->getShortName();
@@ -169,7 +173,7 @@ class Graph
     //     return $this->resources;
     // }
 
-    public function getGraphQlTypeFieldConfig()
+    public function getGraphQlTypeFieldConfig(): array
     {
         $graph = $this;
         $fieldConfig = [];

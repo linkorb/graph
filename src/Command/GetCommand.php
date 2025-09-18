@@ -2,14 +2,11 @@
 
 namespace Graph\Command;
 
-use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 use Graph\Resource\ResourceInterface;
 use Graph\Graph;
 
@@ -21,10 +18,10 @@ class GetCommand extends Command
     public function __construct(Graph $graph, $highlighter)
     {
         $this->graph = $graph;
-        $this->highlighter = $highlighter;;
+        $this->highlighter = $highlighter;
         parent::__construct();
     }
-    
+
     public function configure()
     {
         $this->setName('get')
@@ -52,7 +49,7 @@ class GetCommand extends Command
         $output->write($this->highlighter->highlight($yaml, 'yaml'));
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $typeName = $input->getArgument('typeName');
         $resourceName = $input->getArgument('resourceName');
@@ -63,9 +60,9 @@ class GetCommand extends Command
                 $output->writeLn(' * <info>' . $typeName . '</info> (' . implode(', ', $aliases) . ')');
                 // print_r($aliases);
             }
-            return;
+            return 0;
         }
-        
+
         $typeName = $this->graph->getCanonicalTypeName($typeName);
         if (!$typeName) {
             exit("Unknown type: " . $typeName . PHP_EOL);
@@ -76,22 +73,22 @@ class GetCommand extends Command
             foreach ($resources as $resource) {
                 $output->writeLn(" * <info>" . $resource->getName() . '</info>');
             }
-            return;
+            return 0;
         }
         $resource = $this->graph->getResource($typeName, $resourceName);
         if (!$propertyName) {
             $yaml = Yaml::dump($resource->serialize(), 10, 2);
             $this->writeYaml($output, $yaml);
-            return;
+            return 0;
         }
 
         $value = $resource[$propertyName];
         if (is_string($value) || is_numeric($value)) {
             $output->writeLn($value);
-            return;
+            return 0;
         }
         if (is_array($value)) {
-            foreach ($value as $k=>$v) {
+            foreach ($value as $v) {
                 if (is_string($v)) {
                     $output->writeLn($v);
                 } else {
@@ -100,7 +97,7 @@ class GetCommand extends Command
                     }
                 }
             }
-            return;
+            return 0;
         }
         exit("Unsupported property type...\n");
     }

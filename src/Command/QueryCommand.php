@@ -25,7 +25,7 @@ class QueryCommand extends Command
             ->setDescription('Execute GraphQL query');
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $query = file_get_contents('php://stdin');
 
@@ -36,5 +36,6 @@ class QueryCommand extends Command
         $result = $result->toArray($debug);
 
         echo json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        return 0;
     }
 }
