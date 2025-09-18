@@ -82,11 +82,11 @@ abstract class AbstractResource implements ResourceInterface
         return $this->metadata;
     }
 
-    public function offsetSet($offset, $value) {
+    public function offsetSet($offset, $value): void {
         throw new RuntimeException("Read only array access");
     }
 
-    public function offsetUnset($offset) {
+    public function offsetUnset($offset): void {
         throw new RuntimeException("Read only array access");
     }
 
@@ -95,7 +95,8 @@ abstract class AbstractResource implements ResourceInterface
         return true;
     }
 
-    public function offsetGet($offset) {
+    public function offsetGet($offset): mixed
+    {
         $offset = $this->inflector->camelize($offset);
         $method = 'get' . ucfirst($offset);
         return $this->{$method}();
