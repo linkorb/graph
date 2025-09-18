@@ -2,6 +2,8 @@
 
 namespace Graph\Resource;
 
+use Doctrine\Inflector\Inflector;
+use Doctrine\Inflector\InflectorFactory;
 use Graph\Graph;
 use RuntimeException;
 
@@ -16,10 +18,15 @@ abstract class AbstractResource implements ResourceInterface
     protected $typeName;
     protected $spec = [];
     protected $metadata = [];
+    /**
+     * @var Inflector
+     */
+    private $inflector;
 
     protected function __construct(Graph $graph)
     {
         $this->graph = $graph;
+        $this->inflector = InflectorFactory::create()->build();
     }
 
     public static function fromConfig(Graph $graph, array $config): AbstractResource
@@ -83,12 +90,13 @@ abstract class AbstractResource implements ResourceInterface
         throw new RuntimeException("Read only array access");
     }
 
-    public function offsetExists($offset) {
+    public function offsetExists($offset): bool
+    {
         return true;
     }
 
     public function offsetGet($offset) {
-        $offset = $this->graph->inflector->camelize($offset);
+        $offset = $this->inflector->camelize($offset);
         $method = 'get' . ucfirst($offset);
         return $this->{$method}();
     }
